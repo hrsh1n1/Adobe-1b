@@ -1,17 +1,23 @@
-# Document Intelligence System
+#  Document Intelligence System – Adobe Round 1B
 
-This system extracts and prioritizes the most relevant sections from a collection of documents based on a specific persona and their job-to-be-done.
+This system intelligently extracts and prioritizes the most relevant sections from a collection of PDF documents based on a specific **persona** and their **job-to-be-done**.
 
-## Features
+It is designed to work fully **offline**, within strict performance limits, and produces a clean, structured JSON output highlighting the most relevant content across multiple documents.
 
-- PDF text extraction with page number preservation
-- Section and subsection identification
-- Relevance ranking based on persona and job-to-be-done
-- JSON output generation
 
-## Requirements
+##  Features
 
-- Docker
+-  PDF text extraction with page number mapping
+-  Automatic section and subsection detection
+-  Relevance scoring using persona-task context
+-  Structured JSON output with metadata and rankings
+-  Fully containerized (Docker-ready) for isolated, reproducible execution
+
+##  Requirements
+
+- [Docker](https://www.docker.com/) (installed and running)
+
+---
 
 ## Building the Docker Image
 
