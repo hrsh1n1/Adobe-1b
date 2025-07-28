@@ -1,127 +1,141 @@
-#  Document Intelligence System – Adobe Round 1B
+# 📄 Document Intelligence System – Adobe Round 1B
 
-This system intelligently extracts and prioritizes the most relevant sections from a collection of PDF documents based on a specific **persona** and their **job-to-be-done**.
+This system intelligently **extracts and ranks the most relevant sections** from a collection of PDF documents based on a given **persona** and their **job-to-be-done**.
 
-It is designed to work fully **offline**, within strict performance limits, and produces a clean, structured JSON output highlighting the most relevant content across multiple documents.
-
-
-##  Features
-
--  PDF text extraction with page number mapping
--  Automatic section and subsection detection
--  Relevance scoring using persona-task context
--  Structured JSON output with metadata and rankings
--  Fully containerized (Docker-ready) for isolated, reproducible execution
-
-##  Requirements 
-
-- [Docker](https://www.docker.com/) (installed and running)
+Designed with **offline-first architecture**, it runs entirely inside Docker, ensuring reproducibility, portability, and compliance with strict **Adobe Round 1B constraints**.
 
 ---
 
-## Building the Docker Image
+## ✨ Features
 
-To build the Docker image, run the following command from the project root directory:
+* ✅ PDF text extraction with page number retention
+* ✅ Rule-based section and subsection identification
+* ✅ TF-IDF based semantic relevance ranking
+* ✅ Persona + task-driven scoring heuristics
+* ✅ Fully containerized Docker deployment
+* ✅ Produces structured JSON output with metadata
 
-```bash
-docker build -t document-intelligence .
+---
+
+## ⚙️ Requirements
+
+* [Docker](https://www.docker.com/) installed and running on your system
+* No internet connection required during execution
+
+---
+
+## 📂 Folder Structure
+
+Each collection should follow this format:
+
+```
+Collection_X/
+├── challenge1b_input.json
+├── PDFs/
+│   ├── file1.pdf
+│   ├── file2.pdf
+│   └── ...
 ```
 
-## Running the System
+---
 
-The system takes an input JSON file and produces an output JSON file. The input JSON file should contain:
+## ⚖️ Input Format
 
-- A list of documents (with filenames)
-- A persona description
-- A job-to-be-done description
-
-### Example Input JSON
+Your `challenge1b_input.json` should look like this:
 
 ```json
 {
     "documents": [
-        {
-            "filename": "document1.pdf",
-            "title": "Document 1"
-        },
-        {
-            "filename": "document2.pdf",
-            "title": "Document 2"
-        }
+        {"filename": "document1.pdf", "title": "Document 1"},
+        {"filename": "document2.pdf", "title": "Document 2"}
     ],
-    "persona": {
-        "role": "Travel Planner"
-    },
-    "job_to_be_done": {
-        "task": "Plan a trip of 4 days for a group of 10 college friends."
-    }
+    "persona": { "role": "Travel Planner" },
+    "job_to_be_done": { "task": "Plan a trip of 4 days for a group of 10 college friends." }
 }
 ```
 
-### Running with Docker
+---
 
-To run the system with Docker, use the following command:
+## 📅 Building the Docker Image
 
-```bash
-docker run -v /path/to/input/directory:/data/input -v /path/to/output/directory:/data/output document-intelligence
-```
-
-Replace `/path/to/input/directory` with the path to the directory containing your input JSON file and PDF documents, and `/path/to/output/directory` with the path where you want the output JSON file to be saved.
-
-The input directory should have the following structure:
-
-```
-input/
-├── challenge1b_input.json
-└── PDFs/
-    ├── document1.pdf
-    ├── document2.pdf
-    └── ...
-```
-
-### Custom Input and Output Files
-
-You can specify custom input and output file paths:
+From the project root directory:
 
 ```bash
-docker run -v /path/to/input/directory:/data/input -v /path/to/output/directory:/data/output document-intelligence --input /data/input/custom_input.json --output /data/output/custom_output.json
+docker build --platform linux/amd64 -t document-intelligence .
 ```
 
-## Output Format
+---
 
-The system produces a JSON file with the following structure:
+## 🚀 Running the System
+
+### ✨ Basic Run:
+
+```bash
+docker run --rm \
+  -v "$(pwd)/Collection_X:/data/input" \
+  -v "$(pwd)/Collection_X:/data/output" \
+  --network none \
+  document-intelligence
+```
+
+### ✉️ Custom Input/Output Files
+
+```bash
+docker run --rm \
+  -v "/path/to/input:/data/input" \
+  -v "/path/to/output:/data/output" \
+  document-intelligence \
+  --input /data/input/my_input.json \
+  --output /data/output/my_output.json
+```
+
+---
+
+## 📝 Output Format
+
+Your generated `challenge1b_output.json` will follow this format:
 
 ```json
 {
-    "metadata": {
-        "input_documents": ["document1.pdf", "document2.pdf"],
-        "persona": "Travel Planner",
-        "job_to_be_done": "Plan a trip of 4 days for a group of 10 college friends.",
-        "processing_timestamp": "2025-07-24T15:30:45.123456"
-    },
-    "extracted_sections": [
-        {
-            "document": "document1.pdf",
-            "section_title": "Section Title",
-            "importance_rank": 1,
-            "page_number": 5
-        },
-        ...
-    ],
-    "subsection_analysis": [
-        {
-            "document": "document1.pdf",
-            "refined_text": "Refined text from the subsection...",
-            "page_number": 5
-        },
-        ...
-    ]
+  "metadata": {
+    "input_documents": ["document1.pdf"],
+    "persona": "Travel Planner",
+    "job_to_be_done": "Plan a trip...",
+    "processing_timestamp": "2025-07-24T15:30:45.123456"
+  },
+  "extracted_sections": [
+    {
+      "document": "document1.pdf",
+      "section_title": "Introduction",
+      "importance_rank": 1,
+      "page_number": 2
+    }
+  ],
+  "subsection_analysis": [
+    {
+      "document": "document1.pdf",
+      "refined_text": "Summary of best trip options...",
+      "page_number": 2
+    }
+  ]
 }
 ```
 
-## Performance Constraints
+---
 
-- Runs on CPU only
-- Model size ≤ 1GB
-- Processing time ≤ 60 seconds for document collection (3-5 documents)
-- No internet access required during execution
+## ⏱️ Performance Constraints
+
+| Constraint               | Compliance      |
+| ------------------------ | --------------- |
+| CPU only                 | ✅ Yes           |
+| Model size ≤ 1GB         | ✅ Yes           |
+| Runtime ≤ 60s (3-5 PDFs) | ✅ Optimized     |
+| No internet              | ✅ Fully offline |
+
+---
+
+## 🚀 Ready to Connect the Dots
+
+This system is designed to meet the exact expectations of Adobe Round 1B and is extensible for downstream use in Round 2. Simply mount your input/output directories, provide the persona and job, and the system will do the rest.
+
+Let the documents speak — intelligently. 🤖
