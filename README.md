@@ -13,7 +13,7 @@ It is designed to work fully **offline**, within strict performance limits, and 
 -  Structured JSON output with metadata and rankings
 -  Fully containerized (Docker-ready) for isolated, reproducible execution
 
-##  Requirements
+##  Requirements 
 
 - [Docker](https://www.docker.com/) (installed and running)
 
